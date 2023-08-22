@@ -48,7 +48,7 @@ All project settings and configurations
 5. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
 6. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory.
 
-## Configuration
+## Configuration Before Trainings
 
 All project settings and configurations can be adjusted in the `settings.py` file. This includes paths to data directories, training parameters, and other configurations.
 

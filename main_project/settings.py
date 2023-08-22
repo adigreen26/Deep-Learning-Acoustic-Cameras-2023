@@ -17,7 +17,7 @@ DROPOUT_RATE = 0.05  # Dropout rate for regularization
 
 # Early stopping parameters
 EARLY_STOP_TOLERANCE = 5  # Number of epochs with no improvement after which training will be stopped
-EARLY_STOP_MIN_DELTA = 10  # Minimum change in the monitored quantity to qualify as an improvement
+EARLY_STOP_MIN_DELTA = 1  # Minimum change in the monitored quantity to qualify as an improvement
 
 # Learning rate scheduler parameters
 LR_DECAY_STEP_SIZE = 5  # Period of learning rate decay
