@@ -1,0 +1,10 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore large data files (You might want to store them elsewhere)
+data/
+
+# Ignore output files
+output/
