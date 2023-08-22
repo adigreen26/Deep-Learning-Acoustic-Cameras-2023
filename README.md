@@ -38,18 +38,3 @@ Authors: Sarah Shitrit and Adi Green.
 All project settings and configurations
 
 
-
-## Getting Started
-
-1. **Setup Environment**: Ensure you have Python 3.10 installed. It's recommended to create a virtual environment for this project.
-2. **Install Dependencies**: Install the required packages using `pip install -r requirements.txt` (Note: You'll need to create a `requirements.txt` file with all the necessary packages).
-3. **Video Synchronization**: Before processing the data, ensure that the videos are synchronized. Use the `video_synchronization.py` script located in the `video_synchronization/` directory outside of the `main_project` directory.
-4. **Data Preparation**: Place your video data in the `data/` directory outside of the `main_project` directory. Ensure the videos are in the appropriate `Lab_webm` and `Ronen_webm` subdirectories.
-5. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
-6. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory.
-
-## Configuration Before Trainings
-
-All project settings and configurations can be adjusted in the `settings.py` file. This includes paths to data directories, training parameters, and other configurations.
-
-
