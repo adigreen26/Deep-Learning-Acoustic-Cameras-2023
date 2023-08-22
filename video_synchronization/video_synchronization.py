@@ -1,4 +1,13 @@
 import os
+import sys
+import numpy as np
+# Get the current working directory
+cwd = os.getcwd()
+
+# Append the relative path to video_synchronization
+sys.path.append(os.path.join(cwd, 'video_synchronization'))
+
+import utils
 from utils import (
     get_audio_frame_rate,
     load_video_and_extract_audio,
@@ -12,7 +21,9 @@ from utils import (
 )
 
 # Important! Insert the path to the folder in which the models' parameters are saved
-models_path = r'C:\Users\dimag\Desktop\Adi\Toar_Sheni\Deep Learning\Final Project\Deep-Learning-Acoustic-Cameras-2023'
+# If running from the root directory
+models_path = r'.'  # This will point to the current directory, which is the root
+
 
 lab_dir = os.path.join(models_path, "data", "Lab_webm")
 ronen_dir = os.path.join(models_path, "data", "Ronen_webm")
@@ -67,10 +78,17 @@ for lab_f, ronen_f in zip(lab_files, ronen_files):
         else:
             print('no offset')
 
-        lab_video.write_videofile(
-            models_path + "/Recordings_22.5/lab_synced/lab_sync_video_" + str(sample_num) + ".webm")
-        ronen_video.write_videofile(
-            models_path + "/Recordings_22.5/ronen_synced/ronen_sync_video_" + str(sample_num) + ".webm")
+        # Define the output directories
+        lab_output_dir = os.path.join(models_path, "data", "lab_synced")
+        ronen_output_dir = os.path.join(models_path, "data", "ronen_synced")
+
+        # Define the output file paths
+        lab_output_file = os.path.join(lab_output_dir, f"lab_sync_video_{sample_num}.webm")
+        ronen_output_file = os.path.join(ronen_output_dir, f"ronen_sync_video_{sample_num}.webm")
+
+        # Save the synchronized videos
+        lab_video.write_videofile(lab_output_file)
+        ronen_video.write_videofile(ronen_output_file)
 
     else:
         print(f"No matching file found for sample number {sample_num} in 'ronen_dir'. Skipping...")

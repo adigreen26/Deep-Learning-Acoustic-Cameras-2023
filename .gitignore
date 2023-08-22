@@ -7,4 +7,4 @@ __pycache__/
 data/
 
 # Ignore output files
-output/
+main_project/output/

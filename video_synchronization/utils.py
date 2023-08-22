@@ -7,15 +7,6 @@ SAMPLE_RATE = 44100
 
 
 def get_audio_frame_rate(video_path):
-    """
-    Get the audio frame rate of a video.
-
-    Args:
-    - video_path (str): Path to the video file.
-
-    Returns:
-    - int: Audio frame rate in Hz.
-    """
     # Load the video file
     video = mpy.VideoFileClip(video_path)
 

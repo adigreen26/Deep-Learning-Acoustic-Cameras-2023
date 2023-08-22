@@ -1,40 +1,55 @@
 ## Deep-Learning-Acoustic-Cameras-2023
 
-Acoustic Insights into Bird Sounds: Utilizing Dual Acoustic Cameras for 3D Positioning Analysis. Final Project in the course Deep Learning (05107255) by Raja Giryes. Authors: Sarah Shitrit and Adi Green.
-
-### Components/Steps:
-
-#### 1. Video Synchronization:
-- **Purpose**: 
-  - Synchronize videos based on their audio tracks.
-  
-- **Key Functions**:
-  - `get_audio_frame_rate`: Extracts audio frame rate from a video.
-  - `load_video_and_extract_audio`: Loads a video and extracts its audio.
-  - `convert_to_mono`: Converts stereo audio to mono.
-  - `calculate_cross_correlation`: Computes the cross-correlation between two audio signals.
-  - `find_offset`: Determines the offset between two audio signals based on their cross-correlation.
-  - `butter_bandpass`: Designs a bandpass filter using the Butterworth method.
-  - `butter_bandpass_filter`: Filters an audio signal using a bandpass filter.
-  - `get_num_sample`: Extracts the sample number from a filename.
-  - `get_sorted_files`: Returns a sorted list of files in a directory based on sample number.
-  
-- **Process**:
-  1. Load videos and extract audio.
-  2. Convert stereo audio to mono.
-  3. Normalize audio amplitude.
-  4. Apply a bandpass filter.
-  5. Calculate cross-correlation to find offset.
-  6. Adjust video start time based on offset.
-  7. Write synced videos to new files.
+Acoustic Insights into Bird Sounds: Utilizing Dual Acoustic Cameras for 3D Positioning Analysis.
+Final Project in the course Deep Learning (05107255) by Raja Giryes.
+Authors: Sarah Shitrit and Adi Green.
 
 
-## Usage:
-    How can someone use your project? Any specific instructions or commands they should know?
+## Directory Structure
+**`video_synchronization/`**:
+  - `video_synchronization.py`: Main script for video synchronization
+  - `utils.py`: Utility functions for video synchronization
 
-## Dependencies:    
-    List of libraries or tools used in the project.
+**`main_project/`**:
+- `data_processing/`
+  - `dataloader.py`: Contains the VideoDataset(Dataset) class and related data loading functions 
+  - `data_helpers.py`: Contains helper functions like plot label distribution, display random frame, etc. 
+- `models/` 
+  - `cnn_frame.py`: Contains the CNNFrame model definition 
+- `saved_models/`
+  - `model.pth`: Pre-trained model weights 
+- `training/` 
+  - `train_helpers.py`: Contains training helper functions like early stopping, calculation of saliency maps, etc. 
+  - `train.py`: Contains the main training loop and settings before training 
+- `settings.py`: Configuration and settings for the project
+
+
+## Getting Started
+
+1. **Setup Environment**: Ensure you have Python 3.10 installed. It's recommended to create a virtual environment for this project.
+2. **Install Dependencies**: Install the required packages using `pip install -r requirements.txt` (Note: You'll need to create a `requirements.txt` file with all the necessary packages).
+3. **Video Synchronization**: Before processing the data, ensure that the videos are synchronized. Use the `video_synchronization.py` script located in the `video_synchronization/` directory outside of the `main_project` directory.
+4. **Data Preparation**: Place your video data in the `data/` directory outside of the `main_project` directory. Ensure the videos are in the appropriate `Lab_webm` and `Ronen_webm` subdirectories.
+5. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
+6. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory.
+
+## Configuration
+
+All project settings and configurations
 
 
 
-- 
+## Getting Started
+
+1. **Setup Environment**: Ensure you have Python 3.10 installed. It's recommended to create a virtual environment for this project.
+2. **Install Dependencies**: Install the required packages using `pip install -r requirements.txt` (Note: You'll need to create a `requirements.txt` file with all the necessary packages).
+3. **Video Synchronization**: Before processing the data, ensure that the videos are synchronized. Use the `video_synchronization.py` script located in the `video_synchronization/` directory outside of the `main_project` directory.
+4. **Data Preparation**: Place your video data in the `data/` directory outside of the `main_project` directory. Ensure the videos are in the appropriate `Lab_webm` and `Ronen_webm` subdirectories.
+5. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
+6. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory.
+
+## Configuration
+
+All project settings and configurations can be adjusted in the `settings.py` file. This includes paths to data directories, training parameters, and other configurations.
+
+
