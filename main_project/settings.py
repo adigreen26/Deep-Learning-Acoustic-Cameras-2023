@@ -6,7 +6,7 @@ import torch
 models_path = r'.'  # This will point to the current directory, which is the root of the project
 TARGET_DIR = os.path.join(models_path, "data", "augmentation")
 TRAIN_DIR = os.path.join(TARGET_DIR, "train")
-TEST_CSV = os.path.join(models_path, "test")
+TEST_DIR = os.path.join(models_path, "test")
 
 
 # Hyperparameters

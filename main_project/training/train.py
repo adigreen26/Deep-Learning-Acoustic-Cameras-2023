@@ -12,7 +12,7 @@ from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from matplotlib.pyplot import imsave
 import numpy as np
-from data_processing.VideoDataset import VideoDataset
+from data_processing.dataloader import TrainVideoDataset, TestVideoDataset
 from models.cnn_frame import CNNFrame
 from training.train_helpers import EarlyStopping, calculate_average_saliency_maps, plot_saliency_maps
 import settings
@@ -20,7 +20,7 @@ import settings
 # Directory paths
 target_dir = settings.TARGET_DIR
 train_dir = settings.TRAIN_DIR
-test_dir = settings.TEST_CSV
+test_dir = settings.TEST_DIR
 
 
 # Create instances of the train and test dataset classes
