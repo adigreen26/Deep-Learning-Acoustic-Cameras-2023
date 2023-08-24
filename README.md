@@ -14,7 +14,7 @@ Authors: Sarah Shitrit and Adi Green.
 
 **`main_project/`**:
 - `data_processing/`
-  - `VideoDataset.py.py`: Contains the VideoDataset(Dataset) class and related data loading functions 
+  - `dataloader.py`: Contains the VideoDataset(Dataset) class and related data loading functions 
   - `data_helpers.py`: Contains helper functions like plot label distribution, display random frame, etc. 
 - `models/` 
   - `cnn_frame.py`: Contains the CNNFrame model definition 
@@ -24,16 +24,18 @@ Authors: Sarah Shitrit and Adi Green.
   - `train_helpers.py`: Contains training helper functions like early stopping, calculation of saliency maps, etc. 
   - `train.py`: Contains the main training loop and settings before training 
 - `settings.py`: Configuration and settings for the project
+- `load_model_and_predict.py`: Loading pre-trained model, plot losses and predict
 
 
 ## Getting Started
 
 1. **Setup Environment**: Ensure you have Python 3.10 installed. It's recommended to create a virtual environment for this project.
 2. **Install Dependencies**: Install the required packages using `pip install -r requirements.txt` (Note: You'll need to create a `requirements.txt` file with all the necessary packages).
-3. **Video Synchronization**: Before processing the data, ensure that the videos are synchronized. Use the `video_synchronization.py` script located in the `video_synchronization/` directory outside of the `main_project` directory.
-4. **Data Preparation**: Place your video data in the `data/` directory outside the `main_project` directory. Ensure the videos are in the appropriate `Lab_webm` and `Ronen_webm` subdirectories.
-5. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
-6. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory.
+3. **Video Synchronization**: Before processing the data, ensure that the videos are synchronized. Use the `video_synchronization.py` script located in the `preprocesses/` directory outside of the `main_project` directory.
+4. **Videos to Frames**: After synchronization, decide the configuration of the data and save it to folder. Use the `video_to_frames.py` script located in the `preprocesses/` directory outside of the `main_project` directory.
+5. **Data Preparation**: Place your video data in the `data/` directory outside the `main_project` directory. Ensure the videos are in the appropriate subdirectories.
+6. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
+7. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory using `load_model_and_predict.py` in `main_project/` directory.
 
 ## Configuration
 

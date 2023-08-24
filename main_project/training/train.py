@@ -121,7 +121,8 @@ for epoch in range(num_epochs):
         total_test_loss += loss.item()  # Accumulate the loss
 
     avg_total_test_loss = total_test_loss / num_videos  # Calculate the average test loss
-
+    test_losses.append(avg_total_test_loss)
+    
     # Save the model if it has the lowest test loss so far
     if avg_total_test_loss < best_loss:
         best_loss = avg_total_test_loss
