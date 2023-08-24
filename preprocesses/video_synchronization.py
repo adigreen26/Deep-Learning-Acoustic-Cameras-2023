@@ -4,8 +4,8 @@ import numpy as np
 # Get the current working directory
 cwd = os.getcwd()
 
-# Append the relative path to video_synchronization
-sys.path.append(os.path.join(cwd, 'video_synchronization'))
+# Append the relative path to preprocesses
+sys.path.append(os.path.join(cwd, 'preprocesses'))
 
 import utils
 from utils import (
@@ -23,8 +23,6 @@ from utils import (
 # Important! Insert the path to the folder in which the models' parameters are saved
 # If running from the root directory
 models_path = r'.'  # This will point to the current directory, which is the root
-
-
 lab_dir = os.path.join(models_path, "data", "Lab_webm")
 ronen_dir = os.path.join(models_path, "data", "Ronen_webm")
 labels_csv = os.path.join(models_path, "data", "labels.xlsx")

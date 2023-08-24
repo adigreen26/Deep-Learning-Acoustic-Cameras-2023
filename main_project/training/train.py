@@ -3,7 +3,7 @@ import sys
 import os
 # Get the current working directory
 cwd = os.getcwd()
-# Append the relative path to video_synchronization
+# Append the relative path to preprocesses
 sys.path.append(os.path.join(cwd, 'main_project'))
 
 import torch
@@ -12,7 +12,7 @@ from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from matplotlib.pyplot import imsave
 import numpy as np
-from data_processing.dataloader import VideoDataset
+from data_processing.VideoDataset import VideoDataset
 from models.cnn_frame import CNNFrame
 from training.train_helpers import EarlyStopping, calculate_average_saliency_maps, plot_saliency_maps
 import settings

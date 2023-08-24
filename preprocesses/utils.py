@@ -1,8 +1,10 @@
-import os
-import numpy as np
 import moviepy.editor as mpy
 import os
 from scipy.signal import butter, lfilter
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
 SAMPLE_RATE = 44100
 
 
@@ -60,3 +62,28 @@ def get_sorted_files(directory):
     # Get a sorted list of files in the directory based on sample number
     files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     return sorted(files, key=lambda x: int(get_num_sample(x)))
+
+
+def list_folder_contents_sorted(folder_path):
+    contents = os.listdir(folder_path)
+    sorted_contents = sorted(contents)  # Sort the contents alphabetically
+    print(len(contents))
+    for item in sorted_contents:
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            print(f"File: {item}")
+        elif os.path.isdir(item_path):
+            print(f"Directory: {item}")
+
+
+def plot_label_and_image(image_path, label_path):
+    image = cv2.imread(image_path)
+    label = np.load(label_path)
+    print("Label values:", label)
+    plt.figure(figsize=(6, 3))
+    plt.plot()
+    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    plt.title("Image")
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
