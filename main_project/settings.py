@@ -4,9 +4,9 @@ import torch
 
 # Directory paths
 models_path = r'.'  # This will point to the current directory, which is the root of the project
-LAB_DIR = os.path.join(models_path, "data", "lab_synced")
-RONEN_DIR = os.path.join(models_path, "data", "ronen_synced")
-LABELS_CSV = os.path.join(models_path, "data", "labels.xlsx")
+TARGET_DIR = os.path.join(models_path, "data", "augmentation")
+TRAIN_DIR = os.path.join(TARGET_DIR, "train")
+TEST_CSV = os.path.join(models_path, "test")
 
 
 # Hyperparameters

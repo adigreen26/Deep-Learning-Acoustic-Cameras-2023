@@ -17,17 +17,19 @@ from models.cnn_frame import CNNFrame
 from training.train_helpers import EarlyStopping, calculate_average_saliency_maps, plot_saliency_maps
 import settings
 
-lab_dir = settings.LAB_DIR
-ronen_dir = settings.RONEN_DIR
-labels_csv = settings.LABELS_CSV
+# Directory paths
+target_dir = settings.TARGET_DIR
+train_dir = settings.TRAIN_DIR
+test_dir = settings.TEST_CSV
 
-# Instantiate the dataset
-dataset = VideoDataset(lab_dir, ronen_dir, labels_csv)
-# Split the dataset into a training set and a test set
-train_dataset, test_dataset = dataset.train_test_split_videos(test_size=settings.TEST_SPLIT_SIZE, random_state=settings.RANDOM_SEED)
+
+# Create instances of the train and test dataset classes
+train_dataset = TrainVideoDataset(train_dir)
+test_dataset = TestVideoDataset(test_dir)
 
 batch_size = settings.BATCH_SIZE
 # Instantiate the data loader
+# Create data loaders for train and test datasets
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
@@ -85,52 +87,78 @@ for epoch in range(num_epochs):
     # Evaluation
     model.eval()
     total_test_loss = 0.0
-    with torch.no_grad():
-        for lab_video, ronen_video, label in test_loader:  # Using test_loader for test data
-            lab_frame = lab_video.permute(0, 3, 1, 2)  # [batch, channels, height, width]
-            ronen_frame = ronen_video.permute(0, 3, 1, 2)  # [batch, channels, height, width]
-            label = label.to(device).float()  # Move label tensor to device and ensure it's float
-            lab_frame, ronen_frame = lab_frame.to(device).float(), ronen_frame.to(device).float()
-            outputs = model(lab_frame, ronen_frame)
-            loss = criterion(outputs, label)
-            total_test_loss += loss.item()
+    num_videos = len(test_dataset.videos)  # Number of videos
 
-    avg_test_loss = total_test_loss / len(test_loader)
-    test_losses.append(avg_test_loss)
+    for video_name, video_frames in test_dataset.videos.items():
+        lab_frames, ronen_frames = zip(*video_frames)  # Unzip frames and labels
+        label_file = os.path.splitext(video_frames[0][1])[0] + '_label.npy'
+        label = np.load(os.path.join(test_dataset.ronen_dir, label_file))
+        label = torch.tensor(label, dtype=torch.float32).to(device)
+
+        lab_frames_tensors = []
+        ronen_frames_tensors = []
+
+        for lab_file, ronen_file in video_frames:
+            # Load the images and perform preprocessing
+            lab_image = cv2.imread(os.path.join(test_dataset.lab_dir, lab_file))
+            ronen_image = cv2.imread(os.path.join(test_dataset.ronen_dir, ronen_file))
+
+            lab_image = torch.tensor(lab_image, dtype=torch.float32).to(device).unsqueeze(0)
+            ronen_image = torch.tensor(ronen_image, dtype=torch.float32).to(device).unsqueeze(0)
+
+            lab_frames_tensors.append(lab_image)
+            ronen_frames_tensors.append(ronen_image)
+
+        lab_frames = torch.cat(lab_frames_tensors, dim=0).permute(0, 3, 1, 2)
+        ronen_frames = torch.cat(ronen_frames_tensors, dim=0).permute(0, 3, 1, 2)
+
+        # Forward pass through the model to get predictions
+        outputs = model(lab_frames, ronen_frames)
+        outputs = torch.mean(outputs, dim=0)  # get avrege prediction
+
+        # Calculate the loss using the loaded label
+        loss = criterion(outputs, label)
+        total_test_loss += loss.item()  # Accumulate the loss
+
+    avg_total_test_loss = total_test_loss / num_videos  # Calculate the average test loss
 
     # Save the model if it has the lowest test loss so far
-    if avg_test_loss < best_loss:
-        best_loss = avg_test_loss
-        model_save_path = os.path.join(settings.MODEL_SAVE_DIR, 'best_model_cnn_droput005.pth')
-        torch.save(model.state_dict(), model_save_path)
+    if avg_total_test_loss < best_loss:
+        best_loss = avg_total_test_loss
+        torch.save(model.state_dict(), 'best_model_cnn_droput005_aug50.pth')
 
-    print(f"Epoch [{epoch + 1}/{num_epochs}], Train Loss: {avg_train_loss:.4f}, Test Loss: {avg_test_loss:.4f}")
+    print(
+        f"Epoch [{epoch + 1}/{num_epochs}],Train Loss: {avg_train_loss:.4f}, Test Loss (across all videos): {avg_total_test_loss:.4f}")
 
     # Plot saliency maps for specific epochs
     if epoch == 0 or (epoch + 1) % 10 == 0 or epoch == num_epochs - 1:
         for lab_video, ronen_video, label in test_loader:
             lab_frame = lab_video.permute(0, 3, 1, 2).to(device).float()
             ronen_frame = ronen_video.permute(0, 3, 1, 2).to(device).float()
+            # Take only the first 4 images in the batch
+            lab_frame_subset = lab_frame[:4]
+            ronen_frame_subset = ronen_frame[:4]
 
             # lab_saliency, ronen_saliency = calculate_saliency_maps(model, lab_frame, ronen_frame)
-            lab_saliency, ronen_saliency = calculate_average_saliency_maps(model, lab_frame, ronen_frame)
+            lab_saliency, ronen_saliency = calculate_average_saliency_maps(model, lab_frame_subset, ronen_frame_subset)
             # Normalize the saliency maps for each video in the batch separately
             lab_saliency_normalized = np.zeros_like(lab_saliency)
             ronen_saliency_normalized = np.zeros_like(ronen_saliency)
 
             # Normalize the saliency maps for each video in the batch separately
-            for i in range(lab_frame.shape[0]):
+            for i in range(lab_frame_subset.shape[0]):
                 lab_saliency_normalized[i] = (lab_saliency[i] - lab_saliency[i].min()) / (
                             lab_saliency[i].max() - lab_saliency[i].min())
                 ronen_saliency_normalized[i] = (ronen_saliency[i] - ronen_saliency[i].min()) / (
                             ronen_saliency[i].max() - ronen_saliency[i].min())
 
             # Normalize the frames to [0, 1]
-            lab_frame_normalized = lab_frame.cpu() / 255.0
-            ronen_frame_normalized = ronen_frame.cpu() / 255.0
+            lab_frame_normalized = lab_frame_subset.cpu() / 255.0
+            ronen_frame_normalized = ronen_frame_subset.cpu() / 255.0
 
             plot_saliency_maps(lab_frame_normalized, ronen_frame_normalized, lab_saliency_normalized,
                                ronen_saliency_normalized)
+
             # Inside the plotting section:
             for idx, (lab, ronen, lab_sal, ronen_sal) in enumerate(zip(lab_frame_normalized, ronen_frame_normalized,
                                                                        lab_saliency_normalized,
@@ -148,7 +176,7 @@ for epoch in range(num_epochs):
             break
 
     # Update early stopping object
-    if early_stopping(avg_train_loss, avg_test_loss):
+    if early_stopping(avg_train_loss, avg_total_test_loss):
         print("Early stopping triggered!")
         break
 

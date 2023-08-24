@@ -83,6 +83,11 @@ class VideoPreprocessor:
         if len(frames) == 0:
             return None  # No frames were loaded
 
+        # Check if num_frames is greater than the total number of frames
+        if self.num_frames >= len(frames):
+            averaged_frame = np.mean(frames, axis=0).astype(np.uint8)
+            return [averaged_frame]
+
         # Split frames into segments, average them, and return
         num_segments = len(frames) // self.num_frames
         segments = [frames[i:i + self.num_frames] for i in range(0, len(frames), self.num_frames)]
