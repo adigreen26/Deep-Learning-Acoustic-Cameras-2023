@@ -13,6 +13,7 @@ cwd = os.getcwd()
 # Append the relative path to preprocesses
 sys.path.append(os.path.join(cwd, 'main_project'))
 
+
 def predict_and_compute_loss(data_loader, model, criterion):
     model.eval()
     predictions = []
@@ -65,8 +66,15 @@ with open(os.path.join(model_dir,"losses.txt"), "r") as f:
     train_losses = [float(line.split("\t")[1]) for line in lines]
     test_losses = [float(line.split("\t")[2]) for line in lines]
 
+best_epoch = test_losses.index(min(test_losses)) + 1
+print(f"The best epoch based on test loss is: {best_epoch}")
+
+# Assuming test_loader, model, and criterion are defined
+test_predictions, test_losses, true_labels = predict_and_compute_loss(test_loader, model, criterion)
+print("Test Losses:", np.mean(test_losses))
+
 # Plot the losses
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(5, 3))
 plt.plot(train_losses[5:], label="Train Loss")
 plt.plot(test_losses[5:], label="Test Loss")
 plt.xlabel("Epochs")
@@ -74,11 +82,3 @@ plt.ylabel("Loss")
 plt.legend()
 plt.title("Train and Test Losses Over Epochs")
 plt.show()
-
-best_epoch = test_losses.index(min(test_losses)) + 1
-print(f"The best epoch based on test loss is: {best_epoch}")
-
-# Assuming test_loader, model, and criterion are defined
-test_predictions, test_losses, true_labels = predict_and_compute_loss(test_loader, model, criterion)
-
-print("Test Losses:", np.mean(test_losses))

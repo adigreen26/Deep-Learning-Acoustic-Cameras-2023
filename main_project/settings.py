@@ -1,13 +1,16 @@
 # Contains hyperparameters, paths, and other configurations
 import os
 import torch
+cwd = os.getcwd()
 
 # Directory paths
 models_path = r'.'  # This will point to the current directory, which is the root of the project
-TARGET_DIR = os.path.join(models_path, "data", "augmentation")
-TRAIN_DIR = os.path.join(TARGET_DIR, "train")
-TEST_DIR = os.path.join(TARGET_DIR, "test")
-
+TARGET_DIR = os.path.join(models_path, "main_project")
+DATA_DIR = os.path.join(models_path, "data", "augmentation")
+TRAIN_DIR = os.path.join(DATA_DIR, "train")
+TEST_DIR = os.path.join(DATA_DIR, "test")
+# Directory for saving trained models
+MODEL_SAVE_DIR = os.path.join(TARGET_DIR, "saved_models")
 
 # Hyperparameters
 LEARNING_RATE = 0.01  # Learning rate for the optimizer
@@ -37,6 +40,5 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Use CUD
 RANDOM_SEED = 42  # Seed for random number generation for reproducibility
 TEST_SPLIT_SIZE = 0.2  # Fraction of data to be used as test set
 
-# Directory for saving trained models
-MODEL_SAVE_DIR = os.path.join(TARGET_DIR, "saved_models")
+
 

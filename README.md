@@ -6,6 +6,16 @@ Authors: Sarah Shitrit and Adi Green.
 
 
 ## Directory Structure
+
+**`data/`**:
+  - `augmentation/`: Videos after averaging each video to 5 frames. Divided to train and test by folders.
+  - `averaged/`: Videos after averaging each video to one frame. Divided to train and test by folders.
+  - `lab_synced/`: Videos after synchronization.
+  - `lab_webm/`: Original video files.
+  - `ronen_synced/`: Videos after synchronization.
+  - `ronen_webm/`: Original video files.
+  - `labels.xlsx/`: Labels.
+  
 **`preprocesses/`**:
   - `video_synchronization.py`: Main script for video synchronization
   - `video_to_frames.py`: Takes synced videos and averages them to make a bigger dataset. Saves the dataset into new folders called "augmented".
@@ -16,14 +26,14 @@ Authors: Sarah Shitrit and Adi Green.
 - `data_processing/`
   - `dataloader.py`: Contains the VideoDataset(Dataset) class and related data loading functions 
   - `data_helpers.py`: Contains helper functions like plot label distribution, display random frame, etc. 
-- `models/` 
-  - `cnn_frame.py`: Contains the CNNFrame model definition 
-- `saved_models/`: Pre-trained model weights by folder
-- `training/` 
-  - `train_helpers.py`: Contains training helper functions like early stopping, calculation of saliency maps, etc. 
-  - `train.py`: Contains the main training loop and settings before training 
-- `settings.py`: Configuration and settings for the project
-- `load_model_and_predict.py`: Loading pre-trained model, plot losses and predict
+  - `models/` 
+    - `cnn_frame.py`: Contains the CNNFrame model definition 
+  - `saved_models/`: Pre-trained model weights by folder. Each folder contains the model, a txt. metadata file, and saliency / frames for different epochs.
+  - `training/` 
+    - `train_helpers.py`: Contains training helper functions like early stopping, calculation of saliency maps, etc. 
+    - `train.py`: Contains the main training loop and settings before training 
+  - `settings.py`: Configuration and settings for the project
+  - `load_model_and_predict.py`: Loading pre-trained model, plot losses and predict
 
 
 ## Getting Started
@@ -68,6 +78,9 @@ For `num_frames=500` is data is in folder `averaged`.
      + `num_frames=500`
      + `dropout = 0`
      + `weight_decay = 10e-4`
+
+
+
 
 
 

@@ -1,10 +1,11 @@
 # Contains the main training loop, settings before training, etc.
+import matplotlib.pyplot as plt
 import sys
 import os
+import cv2
 # Get the current working directory
 cwd = os.getcwd()
 sys.path.append(os.path.join(cwd, 'main_project'))
-
 import torch
 import torch.nn as nn
 from torch.optim import lr_scheduler
@@ -20,20 +21,23 @@ import settings
 target_dir = settings.TARGET_DIR
 train_dir = settings.TRAIN_DIR
 test_dir = settings.TEST_DIR
-
+folder_model_name = "saved_data_best_model_cnn_droput"
 
 # Create instances of the train and test dataset classes
 train_dataset = TrainVideoDataset(train_dir)
 test_dataset = TestVideoDataset(test_dir)
-
+dropout = settings.DROPOUT_RATE
+folder_model_name = folder_model_name+str(dropout)
 batch_size = settings.BATCH_SIZE
+
+
 # Instantiate the data loader
 # Create data loaders for train and test datasets
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 # Train for CNNFrame
-model = CNNFrame(num_classes=3)
+model = CNNFrame(num_classes=3, dropout_prob=dropout)
 criterion = nn.MSELoss()
 lr = settings.LEARNING_RATE
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -43,7 +47,7 @@ scheduler = lr_scheduler.StepLR(optimizer, step_size=settings.LR_DECAY_STEP_SIZE
 early_stopping = EarlyStopping(tolerance=settings.EARLY_STOP_TOLERANCE, min_delta=settings.EARLY_STOP_MIN_DELTA)
 
 # Number of epochs
-num_epochs = settings.NUM_EPOCHS
+num_epochs = 1#settings.NUM_EPOCHS
 
 # Use GPU if available
 device = settings.DEVICE
@@ -53,11 +57,28 @@ train_losses = []
 test_losses = []
 best_loss = float('inf')  # Initialize best loss as positive infinity
 
-# Create directories to save the images
-if not os.path.exists("saliency_maps"):
-    os.mkdir("saliency_maps")
-if not os.path.exists("frames"):
-    os.mkdir("frames")
+model_saved_dir = settings.MODEL_SAVE_DIR
+
+# Create directories to save the images and model and losses
+
+# Main directory path
+folder_model_dir = os.path.join(model_saved_dir, folder_model_name)
+
+# Sub-directory paths
+saliency_maps_dir = os.path.join(folder_model_dir, "saliency_maps")
+frames_dir = os.path.join(folder_model_dir, "frames")
+
+# Check and create the main directory
+if not os.path.exists(folder_model_dir):
+    os.mkdir(folder_model_dir)
+
+# Check and create sub-directory "saliency_maps"
+if not os.path.exists(saliency_maps_dir):
+    os.mkdir(saliency_maps_dir)
+
+# Check and create sub-directory "frames"
+if not os.path.exists(frames_dir):
+    os.mkdir(frames_dir)
 
 print("Training...")
 for epoch in range(num_epochs):
@@ -125,7 +146,7 @@ for epoch in range(num_epochs):
     # Save the model if it has the lowest test loss so far
     if avg_total_test_loss < best_loss:
         best_loss = avg_total_test_loss
-        torch.save(model.state_dict(), 'best_model_cnn_droput005_aug50.pth')
+        torch.save(model.state_dict(), os.path.join(folder_model_dir, 'model.pth'))
 
     print(
         f"Epoch [{epoch + 1}/{num_epochs}],Train Loss: {avg_train_loss:.4f}, Test Loss (across all videos): {avg_total_test_loss:.4f}")
@@ -139,7 +160,6 @@ for epoch in range(num_epochs):
             lab_frame_subset = lab_frame[:4]
             ronen_frame_subset = ronen_frame[:4]
 
-            # lab_saliency, ronen_saliency = calculate_saliency_maps(model, lab_frame, ronen_frame)
             lab_saliency, ronen_saliency = calculate_average_saliency_maps(model, lab_frame_subset, ronen_frame_subset)
             # Normalize the saliency maps for each video in the batch separately
             lab_saliency_normalized = np.zeros_like(lab_saliency)
@@ -164,14 +184,14 @@ for epoch in range(num_epochs):
                                                                        lab_saliency_normalized,
                                                                        ronen_saliency_normalized)):
                 # Save frames
-                imsave(os.path.join("frames", f"epoch_{epoch + 1}_lab_frame_{idx}.png"), lab.permute(1, 2, 0).numpy())
-                imsave(os.path.join("frames", f"epoch_{epoch + 1}_ronen_frame_{idx}.png"),
+                imsave(os.path.join(frames_dir, f"epoch_{epoch + 1}_lab_frame_{idx}.png"), lab.permute(1, 2, 0).numpy())
+                imsave(os.path.join(frames_dir, f"epoch_{epoch + 1}_ronen_frame_{idx}.png"),
                        ronen.permute(1, 2, 0).numpy())
 
                 # Save saliency maps
-                imsave(os.path.join("saliency_maps", f"epoch_{epoch + 1}_lab_saliency_{idx}.png"),
+                imsave(os.path.join(saliency_maps_dir, f"epoch_{epoch + 1}_lab_saliency_{idx}.png"),
                        np.transpose(lab_sal, (1, 2, 0)))
-                imsave(os.path.join("saliency_maps", f"epoch_{epoch + 1}_ronen_saliency_{idx}.png"),
+                imsave(os.path.join(saliency_maps_dir, f"epoch_{epoch + 1}_ronen_saliency_{idx}.png"),
                        np.transpose(ronen_sal, (1, 2, 0)))
             break
 
@@ -183,6 +203,31 @@ for epoch in range(num_epochs):
     torch.cuda.empty_cache()
 
 print("Training finished!")
+
+# Save metadata and losses to a text file
+with open(os.path.join(folder_model_dir, "losses.txt"), "w") as f:
+    # Write metadata
+    f.write("Training Metadata:\n")
+    f.write(f"Batch Size: {batch_size}\n")
+    f.write(f"Learning Rate: {optimizer.param_groups[0]['lr']}\n")
+    f.write(f"Number of Epochs: {num_epochs}\n")
+    f.write(f"Number of Training Samples: {len(train_dataset)}\n")
+    f.write(f"Number of Test Samples: {len(test_dataset)}\n")
+    f.write("\n")  # Add a newline for separation
+
+    # Write losses
+    f.write("Epoch\tTrain Loss\tTest Loss\n")
+    for epoch, (train_loss, test_loss) in enumerate(zip(train_losses, test_losses)):
+        f.write(f"{epoch + 1}\t{train_loss:.4f}\t{test_loss:.4f}\n")
+
+# Plotting
+plt.plot(train_losses[5:], label='Train Loss')
+plt.plot(test_losses[5:], label='Test Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Loss vs. Epochs')
+plt.legend()
+plt.show()
 
 
 
