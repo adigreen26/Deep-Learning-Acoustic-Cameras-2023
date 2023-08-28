@@ -8,3 +8,5 @@ data/
 
 # Ignore output files
 main_project/output/
+main_project/saved_models/
+

@@ -3,7 +3,6 @@ import sys
 import numpy as np
 # Get the current working directory
 cwd = os.getcwd()
-
 # Append the relative path to preprocesses
 sys.path.append(os.path.join(cwd, 'preprocesses'))
 

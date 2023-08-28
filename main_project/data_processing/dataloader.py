@@ -32,16 +32,8 @@ class VideoDataset(Dataset):
 
         # Load corresponding label
         label_file = os.path.splitext(ronen_file)[0] + '_label.npy'
-
         label = np.load(os.path.join(self.ronen_dir, label_file))
-
-        # lab_image = torch.tensor(lab_image, dtype=torch.float32).permute(2, 0, 1)  # Permute for PyTorch format
-        # ronen_image = torch.tensor(ronen_image, dtype=torch.float32).permute(2, 0, 1)  # Permute for PyTorch format
         label = torch.tensor(label, dtype=torch.float32)
-
-        # Normalize images if needed (e.g., using ImageNet mean and std)
-        # lab_image = normalize_lab_image(lab_image)
-        # ronen_image = normalize_ronen_image(ronen_image)
 
         return lab_image, ronen_image, label
 
@@ -58,7 +50,6 @@ class VideoDataset(Dataset):
 class TrainVideoDataset(VideoDataset):
     def __init__(self, data_dir):
         super().__init__(data_dir)
-        # You can further customize the dataset for training if needed
 
 
 class TestVideoDataset(VideoDataset):

@@ -3,7 +3,6 @@ import sys
 import os
 # Get the current working directory
 cwd = os.getcwd()
-# Append the relative path to preprocesses
 sys.path.append(os.path.join(cwd, 'main_project'))
 
 import torch

@@ -35,10 +35,39 @@ Authors: Sarah Shitrit and Adi Green.
 4. **Videos to Frames**: After synchronization, decide the configuration of the data and save it to folder. Use the `video_to_frames.py` script located in the `preprocesses/` directory outside of the `main_project` directory.
 5. **Data Preparation**: Place your video data in the `data/` directory outside the `main_project` directory. Ensure the videos are in the appropriate subdirectories.
 6. **Training**: To train the model, navigate to the `training/` directory and run `train.py`.
-7. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory using `load_model_and_predict.py` in `main_project/` directory.
+7. **Evaluation**: After training, you can evaluate the model's performance using the saved weights in the `saved_models/` directory using `load_model_and_predict.py` in `main_project/` directory. Place your models in the `saved_models/` directory inside `main_project/`.
 
-## Configuration
+## Data
+The data is saved in [Google Drive Link](https://drive.google.com/drive/folders/14aMe9iEvR_HsLhjcINDB2XZdYrNwYngk?usp=sharing
+). 
 
-All project settings and configurations
+## Saved Models
+
+The saved models are saved in [Google Drive Link](https://drive.google.com/drive/folders/1-FOlWwH1NtWjpx_2I4yfisFRTnYAjOdf?usp=sharing
+). 
+- These are the setting for the `video_to_frames.py` (num_frames), and dropout for the model.
+For `num_frames=50` is data is in folder `augmentation`. 
+For `num_frames=500` is data is in folder `averaged`.
+  1. saved_data_best_model_cnn_droput01_aug50: 
+     + `num_frames=50`
+     + `dropout = 0.1`
+     + `weight_decay = 0`
+  2. saved_data_cnn_droput005_aug50:
+     + `num_frames=50`
+     + `dropout = 0.05`
+     + `weight_decay = 0`
+  3. saved_data_cnn_dropout005:
+     + `num_frames=500`
+     + `dropout = 0.05`
+     + `weight_decay = 0`
+  4. saved_data_cnn_nodropout_noregula:
+     + `num_frames=500`
+     + `dropout = 0`
+     + `weight_decay = 0`
+  5. saved_data_cnn_nodropout_regulaL2:
+     + `num_frames=500`
+     + `dropout = 0`
+     + `weight_decay = 10e-4`
+
 
 

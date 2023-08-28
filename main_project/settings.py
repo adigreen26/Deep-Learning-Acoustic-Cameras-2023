@@ -6,7 +6,7 @@ import torch
 models_path = r'.'  # This will point to the current directory, which is the root of the project
 TARGET_DIR = os.path.join(models_path, "data", "augmentation")
 TRAIN_DIR = os.path.join(TARGET_DIR, "train")
-TEST_DIR = os.path.join(models_path, "test")
+TEST_DIR = os.path.join(TARGET_DIR, "test")
 
 
 # Hyperparameters
@@ -38,5 +38,5 @@ RANDOM_SEED = 42  # Seed for random number generation for reproducibility
 TEST_SPLIT_SIZE = 0.2  # Fraction of data to be used as test set
 
 # Directory for saving trained models
-MODEL_SAVE_DIR = os.path.join(models_path, "saved_models")
+MODEL_SAVE_DIR = os.path.join(TARGET_DIR, "saved_models")
 

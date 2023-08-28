@@ -7,7 +7,11 @@ import torch
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-
+import sys
+# Get the current working directory
+cwd = os.getcwd()
+# Append the relative path to preprocesses
+sys.path.append(os.path.join(cwd, 'main_project'))
 
 def predict_and_compute_loss(data_loader, model, criterion):
     model.eval()
@@ -35,7 +39,8 @@ def predict_and_compute_loss(data_loader, model, criterion):
 target_dir = settings.TARGET_DIR
 train_dir = settings.TRAIN_DIR
 test_dir = settings.TEST_DIR
-model_dir = settings.MODEL_SAVE_DIR
+what_model = "saved_data_best_model_cnn_droput01_aug50" #name the folder of the model
+model_dir = os.path.join(settings.MODEL_SAVE_DIR, what_model)
 
 # Create instances of the train and test dataset classes
 train_dataset = TrainVideoDataset(train_dir)
