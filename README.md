@@ -18,8 +18,7 @@ Authors: Sarah Shitrit and Adi Green.
   - `data_helpers.py`: Contains helper functions like plot label distribution, display random frame, etc. 
 - `models/` 
   - `cnn_frame.py`: Contains the CNNFrame model definition 
-- `saved_models/`
-  - `model.pth`: Pre-trained model weights 
+- `saved_models/`: Pre-trained model weights by folder
 - `training/` 
   - `train_helpers.py`: Contains training helper functions like early stopping, calculation of saliency maps, etc. 
   - `train.py`: Contains the main training loop and settings before training 
@@ -45,7 +44,8 @@ The data is saved in [Google Drive Link](https://drive.google.com/drive/folders/
 
 The saved models are saved in [Google Drive Link](https://drive.google.com/drive/folders/1-FOlWwH1NtWjpx_2I4yfisFRTnYAjOdf?usp=sharing
 ). 
-- These are the setting for the `video_to_frames.py` (num_frames), and dropout for the model.
+
+These are the setting for the `video_to_frames.py` (num_frames), and dropout for the model.
 For `num_frames=50` is data is in folder `augmentation`. 
 For `num_frames=500` is data is in folder `averaged`.
   1. saved_data_best_model_cnn_droput01_aug50: 
